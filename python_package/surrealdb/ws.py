@@ -79,22 +79,18 @@ class Request(pydantic.BaseModel):
         method: The method of the request.
         params: The parameters of the request.
     """
+    model_config = pydantic.ConfigDict(frozen=True)
 
     id: str
     method: str
     params: Optional[Tuple] = None
 
-    @pydantic.validator("params", pre=True, always=True)
+    @pydantic.validator("params")
     def validate_params(cls, value):  # pylint: disable=no-self-argument
         """Validate the parameters of the request."""
         if value is None:
             return tuple()
         return value
-
-    class Config:
-        """Represents the configuration of the RPC request."""
-
-        allow_mutation = False
 
 
 class ResponseSuccess(pydantic.BaseModel):
@@ -104,18 +100,10 @@ class ResponseSuccess(pydantic.BaseModel):
         id: The ID of the request.
         result: The result of the request.
     """
+    model_config = pydantic.ConfigDict(frozen=True)
 
     id: str
     result: Any
-
-    class Config:
-        """Represents the configuration of the RPC request.
-
-        Attributes:
-            allow_mutation: Whether to allow mutation.
-        """
-
-        allow_mutation = False
 
 
 class ResponseError(pydantic.BaseModel):
